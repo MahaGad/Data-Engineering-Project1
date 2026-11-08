@@ -100,10 +100,80 @@ app.layout = html.Div(
                 "textAlign": "left",
                 "padding": "8px"
             },
-            page_size=10
+                    page_size=10
+        ),
+
+        # MEMBER 4 - PROJECT STORY SECTION
+
+        # ==================================
+        # MEMBER 4 - PROJECT STORY SECTION
+        # ==================================
+
+        html.Hr(),
+
+        html.H2(
+            "The Story Behind NYC's Safety Data",
+            style={"textAlign": "center"}
+        ),
+
+        html.P(
+            "Understanding the relationship between building "
+            "safety violations and traffic incidents across "
+            "New York City's five boroughs."
+        ),
+
+        html.H3("1. Our Research"),
+
+        html.P(
+            "Our project investigates the relationship between "
+            "DOB building safety violations and SIRTA traffic "
+            "crashes and injuries across NYC boroughs."
+        ),
+
+        html.H3("2. The Data"),
+
+        html.P(
+            "We combined the DOB and SIRTA datasets using "
+            "borough and year to investigate patterns in "
+            "building safety and transportation safety."
+        ),
+
+        html.H3("3. Main Findings"),
+
+        html.P(
+            "Our analysis examines the relationships between "
+            "building violations, traffic crashes and injuries. "
+            "The charts above present the results of these comparisons."
+        ),
+
+        html.P(
+            "Final findings and correlation values should be "
+            "added here after reviewing the completed analysis."
+        ),
+
+        html.H3("4. Limitations"),
+
+        html.P(
+            "The analysis uses aggregated borough-level data, "
+            "which may hide differences between individual "
+            "neighborhoods. Missing values, repeated records "
+            "and unusual reporting patterns may also affect "
+            "the results. Correlation does not imply causation."
+        ),
+
+        html.H3("5. Potential Impact on NYC"),
+
+        html.P(
+            "The findings could help city planners, building "
+            "safety authorities and transportation agencies "
+            "identify areas that deserve further investigation "
+            "and support better-informed urban safety planning."
         )
+
     ]
 )
+
+
 # Reusable filtering function
 def filter_data(borough, year, search):
 
