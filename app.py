@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import plotly.express as px
 from dash import Dash, html, dcc, Input, Output, State
@@ -32,6 +34,9 @@ df["violations_per_building"] = (
 
 app = Dash(__name__)
 app.title = "NYC Safety & Traffic Insights"
+
+# Exposed for the production web server (Render runs: gunicorn app:server)
+server = app.server
 
 
 # ============================================================
@@ -442,8 +447,10 @@ def create_charts(data):
     )
 
     # RQ6
+    # Year is converted to text so each year gets its own colour and its own
+    # side-by-side bar (a numeric year would make the bars overlap).
     chart6 = px.bar(
-        data,
+        data.assign(year=data["year"].astype(str)),
         x="borough",
         y="fatalities",
         color="year",
@@ -547,6 +554,10 @@ def create_charts(data):
         }
     )
 
+    # Show whole years only (2022, 2023, ...) on the charts with a year axis
+    for chart in (chart1, chart2, chart3, chart4, chart5):
+        chart.update_xaxes(dtick=1, tickformat="d")
+
     return [
         chart1,
         chart2,
@@ -592,32 +603,33 @@ def generate_report(
     search
 ):
 
-    # Before Generate Report is clicked
-    if n_clicks == 0:
+    # Before Generate Report is clicked, show the full dataset so that every
+    # visualization is visible as soon as the page loads. Filters (which are
+    # State inputs) are only applied after the button is clicked.
+    first_load = not n_clicks
+
+    if first_load:
+        filtered = df.copy()
+    else:
+        filtered = filter_data(
+            borough,
+            year,
+            search
+        )
+
+    # Nothing matches (e.g. the dropdown says Queens but the search says
+    # Brooklyn): tell the user instead of showing a blank page.
+    if filtered.empty:
         empty = px.scatter(
-            title="Click 'Generate Report' to display the analysis."
+            title="No records match the selected filters."
         )
 
         return (
-            "",
+            "No records match the selected filters. Try 'All Boroughs' / "
+            "'All Years' or clear the search box.",
             [],
-            empty,
-            empty,
-            empty,
-            empty,
-            empty,
-            empty,
-            empty,
-            empty,
-            empty,
-            empty
+            *([empty] * 10)
         )
-
-    filtered = filter_data(
-        borough,
-        year,
-        search
-    )
 
     # Table should only contain original 8 dataset columns
     table_columns = [
@@ -636,10 +648,17 @@ def generate_report(
     # Create charts from exactly the same filtered data
     charts = create_charts(filtered)
 
-    summary = (
-        f"Report generated! Showing "
-        f"{len(filtered)} borough-year record(s)."
-    )
+    if first_load:
+        summary = (
+            f"Showing all {len(filtered)} borough-year records. "
+            "Choose filters and click 'Generate Report' to update "
+            "the table and all 10 charts."
+        )
+    else:
+        summary = (
+            f"Report generated! Showing "
+            f"{len(filtered)} borough-year record(s)."
+        )
 
     return (
         summary,
@@ -653,4 +672,7 @@ def generate_report(
 # ============================================================
 
 if __name__ == "__main__":
-    app.run(debug=True) 
+    # Local use only (python app.py). In production Render runs
+    # "gunicorn app:server", so this block is never executed there.
+    # Set the environment variable DASH_DEBUG=1 to turn debug mode on.
+    app.run(debug=os.environ.get("DASH_DEBUG") == "1")
