@@ -4,7 +4,7 @@ Data Engineering and Visualization — Milestone 1 (German International Univers
 
 | | Link |
 |---|---|
-| Live website | **[Add Render link after deployment]** |
+| Live website | https://data-engineering-project1.onrender.com |
 | GitHub repository | https://github.com/MahaGad/Data-Engineering-Project1 |
 | Notebook (Colab) | https://colab.research.google.com/drive/1A0Q5EmYWnGzYNXPEZNvVwqi2dWEivvB8?usp=sharing |
 | Notebook (in this repo) | [`Data_Engineering_M1.ipynb`](Data_Engineering_M1.ipynb) |
