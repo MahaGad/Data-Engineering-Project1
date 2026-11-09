@@ -1,0 +1,10 @@
+# Render Blueprint for the NYC Safety & Traffic Insights website.
+# Use it with: Render dashboard -> New -> Blueprint -> select this repository.
+# (Or create a Web Service by hand with the same build/start commands.)
+services:
+  - type: web
+    name: nyc-safety-traffic-insights
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:server
